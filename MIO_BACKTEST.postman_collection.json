@@ -1,0 +1,548 @@
+{
+	"info": {
+		"_postman_id": "c84078e6-12a3-480e-9e3e-fe0bad57ee88",
+		"name": "API-TEST-MIO BACK  TEST",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1726053"
+	},
+	"item": [
+		{
+			"name": "creación de cliente",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-context-id",
+						"value": "mio-rd"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"userCredentials\": {\n            \"username\": \"LVILLA00082\"},\n\"generalInformation\": {\n            \"firstNames\": \"JUANITO\",\n            \"lastNames\": \"ALIMAÑA\",\n            \"gender\": { \"id\": \"2\" },\n            \"civilStatus\": { \"id\": \"2\" },\n            \"birthCountry\": { \"iso2\": \"US\"},\n            \"birthState\": {\"name\": \"Distrito capital\"},\n            \"birthCity\": {\"name\": \"Caracas\"},\n            \"birthDate\": \"1987/10/22\",\n            \"educationLevel\": {\"id\": \"4\",\"name\": \"College/University\"}},\n\"identityDocuments\": [ {\n            \"documentType\": {\"id\": \"1\",\"name\": \"Goverment ID\"},\n            \"documentNumber\": \"188419882\",\n            \"issueDate\": \"2000/01/07\",\n            \"expirationDate\": \"2027/01/07\",\n            \"country\": {\"iso2\": \"CO\"}} ],\n            \"personalAddress\": {\n            \"country\": {\"iso2\": \"CO\"},\n            \"state\": {\"name\": \"Bogotá D.C\"},\n            \"city\": {\"name\": \"Chia\"},\n            \"streetAddress\": \"carrera 9#10-11\",\n            \"address2\": \"conjunto\",\n            \"zipCode\": \"abc123\",\n            \"buildingNumber\": \"1\",\n            \"homeNumber\": \"504\"},\n\"contactInformation\": {\n            \"phoneCodeIso2\": \"CO\",\n            \"phoneNumber\": \"573138441482\",\n            \"email\": \"lvillareal82@yopmail.com\"\n            \n            }\n            }\n\n"
+				},
+				"url": {
+					"raw": "https://mio-rd-test.novopayment.net/user-core/v2/customers/retail/",
+					"protocol": "https",
+					"host": [
+						"mio-rd-test",
+						"novopayment",
+						"net"
+					],
+					"path": [
+						"user-core",
+						"v2",
+						"customers",
+						"retail",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Saldo en Cuenta",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 900ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(900);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.test(\"test response currency\",  () => {\r",
+							"    var user = jsonData.data\r",
+							"    console.log(user)\r",
+							"   pm.expect(jsonData.data.balance.currency.name).to.eql(\"DOP\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"//para indicar salto en la secuencia de runner\r",
+							"//postman.setNextRequest(\"Ping\");\r",
+							"\r",
+							"//para indicar fin en la secuencia de runner\r",
+							"//postman.setNextRequest(NULL);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "hello-cookie=13df51b6bc6da9e661976360d8a897df"
+					}
+				],
+				"url": {
+					"raw": "https://mio-rd-test.novopayment.net/account-core/v1/mio-rd/retail/C082AF64380C2EB5/accounts/0E529F35A7BCA3CEFE5A3BCD2020CB3C339B6ADE/balance",
+					"protocol": "https",
+					"host": [
+						"mio-rd-test",
+						"novopayment",
+						"net"
+					],
+					"path": [
+						"account-core",
+						"v1",
+						"mio-rd",
+						"retail",
+						"C082AF64380C2EB5",
+						"accounts",
+						"0E529F35A7BCA3CEFE5A3BCD2020CB3C339B6ADE",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Adjustments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validation the response\", function () {\r",
+							"    var jsonData = pm.response.json()\r",
+							"    pm.expect(jsonData.data.msgTypeResponse).to.eqls(\"4010\");\r",
+							"    pm.expect(jsonData.data.endMsgType).to.eqls(\"0000\")\r",
+							"    pm.expect(jsonData.data.transactionDateTime).to.contains(\"2022-05\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-context-id",
+						"value": "mio-rd",
+						"type": "text"
+					},
+					{
+						"key": "x-request-id",
+						"value": "adj-6",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accountId\": \"0E529F35A7BCA3CEFE5A3BCD2020CB3C339B6ADE\",\r\n    \"amount\": \"10.50\",\r\n  \"fee\": \"2\",\r\n    \"tax\": \"1\",\r\n    \"description\": \"prueba de credito con luis\",\r\n    \"sign\": \"+\",\r\n    \"createdBy\": \"MASTER\",\r\n    \"reasonId\": \"11\"\r\n}"
+				},
+				"url": {
+					"raw": "https://mio-rd-test.novopayment.net/operation-core/v1/accounts/adjustments",
+					"protocol": "https",
+					"host": [
+						"mio-rd-test",
+						"novopayment",
+						"net"
+					],
+					"path": [
+						"operation-core",
+						"v1",
+						"accounts",
+						"adjustments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NEW Bloqueo temporal tarjeta ya bloqueada",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Test bloquear tarjeta ya en estado bloqueado\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.rc).to.eql(\"-229\");\r",
+							"    pm.expect(jsonData.msg).to.equals(\"The request could not be processed. The card is blocked.\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "hello-cookie=da7d0d86ca6d35fee50f2a81feb00b02"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"blockTypeId\": \"PB\",\n    \"observations\": \"Prueba Bloqueo Temporal\"\n}"
+				},
+				"url": {
+					"raw": "https://mio-rd-test.novopayment.net/account-core/v1/mio-rd/retail/B25B13628F677130/cards/90852C6FCB7CA6647DB3AA5C277F1BA4C622754E/block",
+					"protocol": "https",
+					"host": [
+						"mio-rd-test",
+						"novopayment",
+						"net"
+					],
+					"path": [
+						"account-core",
+						"v1",
+						"mio-rd",
+						"retail",
+						"B25B13628F677130",
+						"cards",
+						"90852C6FCB7CA6647DB3AA5C277F1BA4C622754E",
+						"block"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NEW Bloqueo temporal tarjeta exitoso",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"test response\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.rc).to.eql(\"0\");\r",
+							"    pm.expect(jsonData.msg).to.equals(\"OK\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "hello-cookie=da7d0d86ca6d35fee50f2a81feb00b02"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"blockTypeId\": \"PB\",\n    \"observations\": \"Prueba Bloqueo Temporal\"\n}"
+				},
+				"url": {
+					"raw": "https://mio-rd-test.novopayment.net/account-core/v1/mio-rd/retail/0415DC7135E45DBE/cards/B3C2ADF5ABB1DF2590631D66BA20EC1BAA8971BD/block",
+					"protocol": "https",
+					"host": [
+						"mio-rd-test",
+						"novopayment",
+						"net"
+					],
+					"path": [
+						"account-core",
+						"v1",
+						"mio-rd",
+						"retail",
+						"0415DC7135E45DBE",
+						"cards",
+						"B3C2ADF5ABB1DF2590631D66BA20EC1BAA8971BD",
+						"block"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Desbloqueo exitoso tarjeta",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"test response\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.rc).to.eql(\"0\");\r",
+							"    pm.expect(jsonData.msg).to.equals(\"OK\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "hello-cookie=13df51b6bc6da9e661976360d8a897df; hello-cookie=46d9a9a4b8c52aba51377aa7de1b4d6e"
+					}
+				],
+				"url": {
+					"raw": "https://mio-rd-test.novopayment.net/account-core/v1/mio-rd/retail/0415DC7135E45DBE/cards/B3C2ADF5ABB1DF2590631D66BA20EC1BAA8971BD/block-type/active",
+					"protocol": "https",
+					"host": [
+						"mio-rd-test",
+						"novopayment",
+						"net"
+					],
+					"path": [
+						"account-core",
+						"v1",
+						"mio-rd",
+						"retail",
+						"0415DC7135E45DBE",
+						"cards",
+						"B3C2ADF5ABB1DF2590631D66BA20EC1BAA8971BD",
+						"block-type",
+						"active"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Desbloqueo exitoso tarjeta ya activa",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"test msg response\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.rc).to.eql(\"-125\");\r",
+							"    pm.expect(jsonData.msg).to.eqls(\"The card is already active.\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "hello-cookie=13df51b6bc6da9e661976360d8a897df; hello-cookie=46d9a9a4b8c52aba51377aa7de1b4d6e"
+					}
+				],
+				"url": {
+					"raw": "https://mio-rd-test.novopayment.net/account-core/v1/mio-rd/retail/0415DC7135E45DBE/cards/B3C2ADF5ABB1DF2590631D66BA20EC1BAA8971BD/block-type/active",
+					"protocol": "https",
+					"host": [
+						"mio-rd-test",
+						"novopayment",
+						"net"
+					],
+					"path": [
+						"account-core",
+						"v1",
+						"mio-rd",
+						"retail",
+						"0415DC7135E45DBE",
+						"cards",
+						"B3C2ADF5ABB1DF2590631D66BA20EC1BAA8971BD",
+						"block-type",
+						"active"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Customer_list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://mio-rd-test.novopayment.net/user-core/v2/customers",
+					"protocol": "https",
+					"host": [
+						"mio-rd-test",
+						"novopayment",
+						"net"
+					],
+					"path": [
+						"user-core",
+						"v2",
+						"customers"
+					],
+					"query": [
+						{
+							"key": "documentTypeId",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "statusId",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "top",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "customerId",
+							"value": "A02185FE2704D24F",
+							"disabled": true
+						},
+						{
+							"key": "fromCreatedDate",
+							"value": "20220221",
+							"disabled": true
+						},
+						{
+							"key": "toCreatedDate",
+							"value": "20220221",
+							"disabled": true
+						},
+						{
+							"key": "documentNumber",
+							"value": "12345",
+							"disabled": true
+						},
+						{
+							"key": "firstNames",
+							"value": "yoharlyn",
+							"disabled": true
+						},
+						{
+							"key": "lastNames",
+							"value": "alvarez",
+							"disabled": true
+						},
+						{
+							"key": "fromReviewDate",
+							"value": "20220301",
+							"disabled": true
+						},
+						{
+							"key": "toReviewDate",
+							"value": "20220301",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Customer General Information",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is OK\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 400, 500])\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Test contains expect documentNumber response \", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"documentNumber\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Test contains expect firstnames response \", function () {\r",
+							"    var jsonData = pm.response.json()\r",
+							"    var name = jsonData.data.customer.generalInformation;\r",
+							"    console.log(name)\r",
+							"    pm.expect(pm.response.text(name)).to.include(\"firstnames\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-context-id",
+						"value": "mio-rd",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://mio-rd-test.novopayment.net/user-core/v2/customers/495359C5D842AEEB",
+					"protocol": "https",
+					"host": [
+						"mio-rd-test",
+						"novopayment",
+						"net"
+					],
+					"path": [
+						"user-core",
+						"v2",
+						"customers",
+						"495359C5D842AEEB"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
