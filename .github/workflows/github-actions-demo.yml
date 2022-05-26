@@ -1,0 +1,17 @@
+# EL FLUJO BASICO DE NEWMAN EN GITHUB
+
+name: "Newman Tests"
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: 
+      image: postman/newman
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+#Ejecución del comando
+      - name: Run API Tests
+        run: newman run "MIO_BACKTEST.postman_collection.json" -e Test_MIO.postman_environment.json
